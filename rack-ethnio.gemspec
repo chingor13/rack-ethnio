@@ -1,6 +1,6 @@
 Gem::Specification.new do |s|
   s.name = "rack-ethnio"
-  s.version = "0.0.3"
+  s.version = "0.0.1"
   s.description = "Integrate Ethnio tracking into your Rack-based application"
   s.summary = "Integrate Ethnio tracking into your Rack-based application"
   s.add_dependency "rack"
