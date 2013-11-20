@@ -1,4 +1,5 @@
-# Rack::Ethnio
+# Rack::Ethnio [![Build Status](https://travis-ci.org/chingor13/rack-ethnio.png)](https://travis-ci.org/chingor13/rack-ethnio)
+
 This Rack middleware will easily integrate your Rack-based app with Ethnio's website recruiting feature.
 
 If your request is a redirect, we will store the Ethnio id in the session and show it on the next available page.
