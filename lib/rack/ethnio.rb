@@ -13,12 +13,15 @@ module Rack
 
       return [@status, @headers, @body] unless html?
       response = Rack::Response.new([], @status, @headers)
-      @events = Array(env[STORAGE_KEY])
+      @events = []
 
       if response.ok?
+        # only inject script tags on a 200
+        @events += Array(env[STORAGE_KEY])
+
         # get any stored events
         session = env["rack.session"]
-        stored_events = session.delete(STORAGE_KEY) if session
+        stored_events = Array(session.delete(STORAGE_KEY)) if session
         @events += stored_events if stored_events
       elsif response.redirection? && env["rack.session"]
         # Store the events until next time

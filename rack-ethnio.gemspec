@@ -7,6 +7,7 @@ Gem::Specification.new do |s|
 
   s.add_development_dependency "rack-test"
   s.add_development_dependency "nokogiri"
+  s.add_development_dependency "mocha"
 
   s.author = "Jeff Ching"
   s.email = "jeff@chingr.com"

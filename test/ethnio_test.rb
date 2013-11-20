@@ -22,6 +22,24 @@ class EthnioTest < MiniTest::Unit::TestCase
     assert_equal("Some text", response.body)
   end
 
+  def test_saves_to_session_on_redirect
+    @session = mock()
+    @session.expects(:[]=).with('rack.ethnio', 12345)
+    response = request(12345, {:redirect => "http://localhost/"})
+    assert_equal(HTML_DOC, response.body)
+  end
+
+  def test_displays_from_session
+    @session = {'rack.ethnio' => 12345}
+    response = request(nil)
+
+    doc = Nokogiri::HTML(response.body)
+    scripts = doc.search('html body script')
+    assert_equal(1, scripts.count)
+    script = scripts.first
+    assert(script.text.match("//ethn.io/remotes/12345.js"))
+  end
+
   protected
 
   HTML_DOC = <<-EOF
@@ -38,10 +56,19 @@ class EthnioTest < MiniTest::Unit::TestCase
   def request(ethnio, opts = {})
     body = opts.delete(:body) || [HTML_DOC]
     content_type = opts.delete(:content_type) || "text/html"
-    app = lambda { |env| 
-      env['rack.ethnio'] = ethnio if ethnio
-      [200, {'Content-Type' => content_type}, body]
-    }
+    if redirect = opts.delete(:redirect)
+      app = lambda { |env|
+        env['rack.session']= @session if @session
+        env['rack.ethnio'] = ethnio if ethnio
+        [301, {'Location' => redirect, 'Content-Type' => content_type}, body]
+      }
+    else
+      app = lambda { |env|
+        env['rack.session']= @session if @session
+        env['rack.ethnio'] = ethnio if ethnio
+        [200, {'Content-Type' => content_type}, body]
+      }
+    end
     @application = Rack::Ethnio.new(app, opts)
     @request = Rack::MockRequest.new(@application).get("/")
     yield(@application, @request) if block_given?
