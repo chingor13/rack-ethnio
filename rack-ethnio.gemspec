@@ -5,6 +5,9 @@ Gem::Specification.new do |s|
   s.summary = "Integrate Ethnio tracking into your Rack-based application"
   s.add_dependency "rack"
 
+  s.add_development_dependency "rack-test"
+  s.add_development_dependency "nokogiri"
+
   s.author = "Jeff Ching"
   s.email = "jeff@chingr.com"
   s.homepage = "http://github.com/chingor13/rack-ethnio"
